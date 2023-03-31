@@ -1,2 +1,2 @@
 # self-driving-vehicle-controller
-exploring how controllers work in autonomous vehicles
+This controller is made to autonomously follow a set of waypoints based on a given trajectory. Simulated and tested using CARLA.
