@@ -93,6 +93,8 @@ class Controller2D(object):
         steer_output    = 0
         brake_output    = 0
 
+        error = setpoint - actual value
+
         ######################################################
         ######################################################
         # MODULE 7: DECLARE USAGE VARIABLES HERE
@@ -114,6 +116,8 @@ class Controller2D(object):
             throttle_output = 0.5 * self.vars.v_previous
         """
         self.vars.create_var('v_previous', 0.0)
+        self.vars.create_var('t_previous', 0.0)
+        self.vars.create_var('error_previous', 0.0)
 
         # Skip the first frame to store previous values properly
         if self._start_control_loop:
@@ -198,3 +202,5 @@ class Controller2D(object):
             in the next iteration)
         """
         self.vars.v_previous = v  # Store forward speed to be used in next step
+        self.vars.t_previous = t # Store time to be used in next step
+        self.vars.error_previous = error # Store previous error to be used in next step
