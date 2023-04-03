@@ -26,6 +26,11 @@ class Controller2D(object):
         self._pi                 = np.pi
         self._2pi                = 2.0 * np.pi
 
+        # gain constants for PID
+        self.Kp = 1
+        self.Ki = 1
+        self.Kd = 1
+
     def update_values(self, x, y, yaw, speed, timestamp, frame):
         self._current_x         = x
         self._current_y         = y
@@ -95,9 +100,6 @@ class Controller2D(object):
 
         # error = setpoint - actual_value
         error = v_desired - v
-        Kp = 1
-        Ki = 1
-        Kd = 1
 
         ######################################################
         ######################################################
