@@ -98,9 +98,6 @@ class Controller2D(object):
         steer_output    = 0
         brake_output    = 0
 
-        # error = setpoint - actual_value
-        error = v_desired - v
-
         ######################################################
         ######################################################
         # MODULE 7: DECLARE USAGE VARIABLES HERE
@@ -169,6 +166,15 @@ class Controller2D(object):
                 access the persistent variables declared above here. For
                 example, can treat self.vars.v_previous like a "global variable".
             """
+            
+            # defining errors
+            # error = setpoint - actual_value
+            error = v_desired - v
+            integral_error = error + self.vars.error_previous
+            derivative_error = error + self.vars.error_previous
+
+            # sampling time
+            dt = t - self.vars.t_previous
             
             # Change these outputs with the longitudinal controller. Note that
             # brake_output is optional and is not required to pass the
