@@ -31,6 +31,10 @@ class Controller2D(object):
         self.Ki = 1
         self.Kd = 1
 
+        # error sum for integral term of PID
+        self.error_sum = 0
+
+
     def update_values(self, x, y, yaw, speed, timestamp, frame):
         self._current_x         = x
         self._current_y         = y
@@ -176,10 +180,12 @@ class Controller2D(object):
             # sampling time
             dt = t - self.vars.t_previous
             
+            self.error_sum += error * dt
+            throttle_output = (self.Kp * error) + (self.Ki * self.error_sum) + (self.Kd * ((error - self.vars.error_previous)/dt))
+
             # Change these outputs with the longitudinal controller. Note that
             # brake_output is optional and is not required to pass the
             # assignment, as the car will naturally slow down over time.
-            throttle_output = 0
             brake_output    = 0
 
             ######################################################
