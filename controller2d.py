@@ -93,7 +93,11 @@ class Controller2D(object):
         steer_output    = 0
         brake_output    = 0
 
-        error = setpoint - actual value
+        # error = setpoint - actual_value
+        error = v_desired - v
+        Kp = 1
+        Ki = 1
+        Kd = 1
 
         ######################################################
         ######################################################
