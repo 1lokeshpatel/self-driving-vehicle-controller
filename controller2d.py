@@ -27,8 +27,8 @@ class Controller2D(object):
         self._2pi                = 2.0 * np.pi
 
         # gain constants for PID
-        self.Kp = 1
-        self.Ki = 1
+        self.Kp = 3
+        self.Ki = 0.2
         self.Kd = 1
 
         # error sum for integral term of PID
@@ -174,13 +174,12 @@ class Controller2D(object):
             # defining errors
             # error = setpoint - actual_value
             error = v_desired - v
-            integral_error = error + self.vars.error_previous
-            derivative_error = error + self.vars.error_previous
 
             # sampling time
             dt = t - self.vars.t_previous
             
             self.error_sum += error * dt
+            
             throttle_output = (self.Kp * error) + (self.Ki * self.error_sum) + (self.Kd * ((error - self.vars.error_previous)/dt))
 
             # Change these outputs with the longitudinal controller. Note that
