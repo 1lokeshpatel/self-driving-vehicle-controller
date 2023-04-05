@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 """
 2D Controller Class to be used for the CARLA waypoint follower demo.
 """
@@ -105,26 +103,6 @@ class Controller2D(object):
         steer_output    = 0
         brake_output    = 0
 
-        ######################################################
-        ######################################################
-        # MODULE 7: DECLARE USAGE VARIABLES HERE
-        ######################################################
-        ######################################################
-        """
-            Use 'self.vars.create_var(<variable name>, <default value>)'
-            to create a persistent variable (not destroyed at each iteration).
-            This means that the value can be stored for use in the next
-            iteration of the control loop.
-
-            Example: Creation of 'v_previous', default value to be 0
-            self.vars.create_var('v_previous', 0.0)
-
-            Example: Setting 'v_previous' to be 1.0
-            self.vars.v_previous = 1.0
-
-            Example: Accessing the value from 'v_previous' to be used
-            throttle_output = 0.5 * self.vars.v_previous
-        """
         self.vars.create_var('v_previous', 0.0)
         self.vars.create_var('t_previous', 0.0)
         self.vars.create_var('error_previous', 0.0)
@@ -162,18 +140,9 @@ class Controller2D(object):
                     steer_output    : Steer output (-1.22 rad to 1.22 rad)
                     brake_output    : Brake output (0 to 1)
             """
-
-            ######################################################
-            ######################################################
-            # MODULE 7: IMPLEMENTATION OF LONGITUDINAL CONTROLLER HERE
-            ######################################################
-            ######################################################
-            """
-                Implement a longitudinal controller here. Remember that you can
-                access the persistent variables declared above here. For
-                example, can treat self.vars.v_previous like a "global variable".
-            """
             
+            # LONGITUDINAL CONTROLLER IMPLEMENTATION
+
             # defining errors
             # error = setpoint - actual_value
             error = v_desired - v
@@ -190,31 +159,26 @@ class Controller2D(object):
             # assignment, as the car will naturally slow down over time.
             brake_output    = 0
 
-            ######################################################
-            ######################################################
-            # MODULE 7: IMPLEMENTATION OF LATERAL CONTROLLER HERE
-            ######################################################
-            ######################################################
-            """
-                Implement a lateral controller here. Remember that you can
-                access the persistent variables declared above here. For
-                example, can treat self.vars.v_previous like a "global variable".
-            """
-            # lookahead distance
+            # LATERAL CONTROLLER IMPLEMENTATION
+
+            # lookahead distance constant minimum
             lookahead_dist = 3.5
+
+            # looping through waypoint to find waypoint index where lookahead distance is above minimum constant
             current_index = 0
             for i in range(len(waypoints)):
                 if np.sqrt((waypoints[i][1]-y)**2 + (waypoints[i][0]-x)**2) > lookahead_dist:
                     current_index = i
                     break
             
+            # calculating alpha_hat to use to calculate alpha
             alpha_hat = np.arctan2(waypoints[current_index][1]-y, waypoints[current_index][0]-x)
 
             # calculating alpha in pure pursuit controller equation
             alpha =  alpha_hat- self._current_yaw
 
-            # Change the steer output with the lateral controller. 
-            steer_output    = np.arctan2((2*self.car_length*np.sin(alpha)), 1 * v)
+            # Change the steer output with the lateral controller using pure pursuit equation
+            steer_output    = np.arctan2((2*self.car_length*np.sin(alpha)), 1.2 * v)
 
             ######################################################
             # SET CONTROLS OUTPUT
@@ -223,16 +187,6 @@ class Controller2D(object):
             self.set_steer(steer_output)        # in rad (-1.22 to 1.22)
             self.set_brake(brake_output)        # in percent (0 to 1)
 
-        ######################################################
-        ######################################################
-        # MODULE 7: STORE OLD VALUES HERE (ADD MORE IF NECESSARY)
-        ######################################################
-        ######################################################
-        """
-            Use this block to store old values (for example, we can store the
-            current x, y, and yaw values here using persistent variables for use
-            in the next iteration)
-        """
-        self.vars.v_previous = v  # Store forward speed to be used in next step
+        self.vars.v_previous = v # Store forward speed to be used in next step
         self.vars.t_previous = t # Store time to be used in next step
         self.vars.error_previous = error # Store previous error to be used in next step
