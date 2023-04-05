@@ -201,10 +201,10 @@ class Controller2D(object):
                 example, can treat self.vars.v_previous like a "global variable".
             """
             # lookahead distance
-            lookahead_dist = 15
-            current_index = self._current_frame
-            for i in range(len(waypoints)-self._current_frame):
-                if np.sqrt((waypoints[i+self._current_frame][1]-y)**2 + (waypoints[i+self._current_frame][0]-x)**2) > lookahead_dist:
+            lookahead_dist = 3.5
+            current_index = 0
+            for i in range(len(waypoints)):
+                if np.sqrt((waypoints[i][1]-y)**2 + (waypoints[i][0]-x)**2) > lookahead_dist:
                     current_index = i
                     break
             
@@ -214,7 +214,7 @@ class Controller2D(object):
             alpha =  alpha_hat- self._current_yaw
 
             # Change the steer output with the lateral controller. 
-            steer_output    = np.arctan2((2*self.car_length*np.sin(alpha)), 3 * v)
+            steer_output    = np.arctan2((2*self.car_length*np.sin(alpha)), 1 * v)
 
             ######################################################
             # SET CONTROLS OUTPUT
