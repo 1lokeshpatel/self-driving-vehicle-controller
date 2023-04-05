@@ -26,6 +26,9 @@ class Controller2D(object):
         self._pi                 = np.pi
         self._2pi                = 2.0 * np.pi
 
+        # assuming car length
+        self.car_length = 2
+
         # gain constants for PID
         self.Kp = 3
         self.Ki = 0.2
@@ -197,9 +200,21 @@ class Controller2D(object):
                 access the persistent variables declared above here. For
                 example, can treat self.vars.v_previous like a "global variable".
             """
+            # lookahead distance
+            lookahead_dist = 15
+            current_index = self._current_frame
+            for i in range(len(waypoints)-self._current_frame):
+                if np.sqrt((waypoints[i+self._current_frame][1]-y)**2 + (waypoints[i+self._current_frame][0]-x)**2) > lookahead_dist:
+                    current_index = i
+                    break
             
+            alpha_hat = np.arctan2(waypoints[current_index][1]-y, waypoints[current_index][0]-x)
+
+            # calculating alpha in pure pursuit controller equation
+            alpha =  alpha_hat- self._current_yaw
+
             # Change the steer output with the lateral controller. 
-            steer_output    = 0
+            steer_output    = np.arctan2((2*self.car_length*np.sin(alpha)), 3 * v)
 
             ######################################################
             # SET CONTROLS OUTPUT
